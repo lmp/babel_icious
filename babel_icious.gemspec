@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = 'babel_icious'
-  s.version = '0.0.10'
+  s.version = '0.0.11'
   s.date = '2011-02-21'
   s.summary = 'Babel_icious dynamic and scalable mapping tool'
   s.email = "github@cwyckoff.com"
@@ -11,7 +11,7 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.rdoc", "MIT-LICENSE"]
   s.authors = ["Chris Wyckoff", "Eric Wollesen", "Brad Midgley"]
   s.add_dependency('nokogiri')
-  
+
   s.files = ["init.rb",
 	     "lib/babel_icious.rb",
              "lib/babel_icious/map_condition.rb",
