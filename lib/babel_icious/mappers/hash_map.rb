@@ -4,21 +4,21 @@ module Babelicious
     attr_accessor :path_translator
 
     class << self
-      
+
       def initial_target
         {}
       end
-      
+
       def filter_source(source)
         source
       end
-      
+
     end
 
     def initialize(path_translator, opts={})
       @path_translator, @opts = path_translator, opts
     end
-    
+
     def value_from(source)
       hash = {}
       element = ""
@@ -27,7 +27,7 @@ module Babelicious
         return source_element(hsh, element) if (index == @path_translator.last_index && index != 0)
         if hsh.empty?
           source_element(source, element)
-        else 
+        else
           source_element(hsh, element)
         end
       end
@@ -42,15 +42,15 @@ module Babelicious
             hsh[element]
           else
             hsh[element] = (index == @path_translator.last_index ? map_source_value(source_value) : {})
-          end 
+          end
         end
-      end 
-    end 
+      end
+    end
 
     private
-    
+
     def source_element(source, element)
-      source[element.to_sym] || source[element.to_s] || ''
+      value_from_source_element(source, element)
     rescue TypeError => e
       # This method deals with `source` being a string by abusing a strange
       # behavior in ruby 1.8.7. Namely that `""[:foo] => nil` and `""["foo"]
@@ -64,13 +64,25 @@ module Babelicious
         raise e
       end
     end
-    
+
     def map_source_value(source_value)
       if(@customized_map)
         @customized_map.call(source_value)
-      else 
+      else
         source_value
-      end 
+      end
+    end
+
+    def value_from_source_element(source, element)
+      value =
+        if source.has_key?(element.to_sym)
+          source[element.to_sym]
+        elsif source.has_key?(element.to_s)
+          source[element.to_s]
+        end
+
+      # blank returned when nil, to maintain old functionality, not sure if needed
+      value.nil? ? '' : value
     end
 
   end
