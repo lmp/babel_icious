@@ -81,6 +81,7 @@ module Babelicious
           source[element.to_s]
         end
 
+      # blank returned when nil, to maintain old functionality, not sure if needed
       value.nil? ? '' : value
     end
 
