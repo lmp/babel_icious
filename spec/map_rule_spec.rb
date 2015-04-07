@@ -9,7 +9,7 @@ module Babelicious
       before(:each) do
         @map_rule = MapRule.new
       end
-      
+
       context "#source=" do
 
         it "should set source mapping" do
@@ -39,8 +39,8 @@ module Babelicious
     describe "getting source and target" do
 
       before(:each) do
-        @source = mock("XmlMap")
-        @target = mock("HashMap")
+        @source = double("XmlMap")
+        @target = double("HashMap")
         @map_rule = MapRule.new(@source, @target)
       end
 
@@ -62,27 +62,27 @@ module Babelicious
 
       end
 
-    end 
+    end
 
     context "#filtered_source" do
 
       it "should delegate to source strategy" do
         # given
-        source = mock("HashMap", :class => HashMap)
-        target = mock("HashMap")
+        source = double("HashMap", :class => HashMap)
+        target = double("HashMap")
         map_rule = MapRule.new(source, target)
 
         # expect
         HashMap.should_receive(:filter_source).with({:foo => "bar"})
-        
+
         # when
         map_rule.filtered_source({:foo => "bar"})
       end
 
       it "should return filtered source data structure for source strategy" do
         # given
-        source = mock("HashMap", :class => HashMap)
-        target = mock("HashMap")
+        source = double("HashMap", :class => HashMap)
+        target = double("HashMap")
         map_rule = MapRule.new(source, target)
 
         # expect
@@ -95,15 +95,15 @@ module Babelicious
 
       before(:each) do
         # given
-        source = mock("XmlMap")
-        target = mock("HashMap", :class => HashMap)
+        source = double("XmlMap")
+        target = double("HashMap", :class => HashMap)
         @map_rule = MapRule.new(source, target)
       end
 
       it "should delegate to target strategy" do
         # expect
         HashMap.should_receive(:initial_target)
-        
+
         # when
         @map_rule.initial_target
       end
@@ -115,13 +115,13 @@ module Babelicious
     end
 
     context "source and target path shortcuts" do
-      
+
       before(:each) do
         # given
-        @source_path_translator = mock("PathTranslator", :full_path => "foo/bar")
-        @target_path_translator = mock("PathTranslator", :full_path => "bar/foo")
-        @source = mock("XmlMap", :path_translator => @source_path_translator)
-        @target = mock("HashMap", :class => HashMap, :path_translator => @target_path_translator)
+        @source_path_translator = double("PathTranslator", :full_path => "foo/bar")
+        @target_path_translator = double("PathTranslator", :full_path => "bar/foo")
+        @source = double("XmlMap", :path_translator => @source_path_translator)
+        @target = double("HashMap", :class => HashMap, :path_translator => @target_path_translator)
         @map_rule = MapRule.new(@source, @target)
       end
 
@@ -146,8 +146,8 @@ module Babelicious
     context "#translate" do
 
       before(:each) do
-        @source = mock("XmlMap")
-        @target = mock("HashMap", :opts => { }, :map_from => nil)
+        @source = double("XmlMap")
+        @target = double("HashMap", :opts => { }, :map_from => nil)
         @map_rule = MapRule.new(@source, @target)
         @target_data = { }
         @source_value = '<foo>bar</foo>'
@@ -156,8 +156,8 @@ module Babelicious
       context "target mapping to_proc option is set" do
 
         before(:each) do
-          @path_translator = mock("PathTranslator", :set_path => nil)
-          @target_with_proc = mock("HashMap", :opts => {:to_proc => Proc.new { }}, 
+          @path_translator = double("PathTranslator", :set_path => nil)
+          @target_with_proc = double("HashMap", :opts => {:to_proc => Proc.new { }},
                                    :map_from => nil, :path_translator => @path_translator)
           @map_rule = MapRule.new(@source, @target_with_proc)
         end
@@ -169,7 +169,7 @@ module Babelicious
           # when
           @map_rule.translate(@target_data, @source_value)
         end
-        
+
         it "should delegate mapping to target element" do
           # expect
           @target_with_proc.should_receive(:map_from).with(@target_data, @source_value)
@@ -177,7 +177,7 @@ module Babelicious
           # when
           @map_rule.translate(@target_data, @source_value)
         end
-        
+
       end
 
       it "should delegate mapping to target element" do
@@ -187,8 +187,8 @@ module Babelicious
         # when
         @map_rule.translate(@target_data, @source_value)
       end
-      
+
     end
-    
-  end 
+
+  end
 end

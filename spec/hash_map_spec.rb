@@ -20,7 +20,7 @@ module Babelicious
     end
 
     before(:each) do
-      @path_translator = mock("PathTranslator", :last_index => 0)
+      @path_translator = double("PathTranslator", :last_index => 0)
       @strategy = HashMap.new(@path_translator)
     end
 
@@ -34,7 +34,7 @@ module Babelicious
 
       before(:each) do
         @target_hash = {}
-        @path_translator = mock("PathTranslator", :last_index => 0)
+        @path_translator = double("PathTranslator", :last_index => 0)
         @hash_map = HashMap.new(@path_translator)
         @path_translator.stub!(:inject_with_index).and_yield(@target_hash, "bar", 0)
       end
@@ -58,7 +58,7 @@ module Babelicious
       describe "map condition is set" do
 
         before(:each) do
-          MapCondition.stub!(:new).and_return(@map_condition = mock("MapCondition", :register => nil, :is_satisfied_by => true))
+          MapCondition.stub!(:new).and_return(@map_condition = double("MapCondition", :register => nil, :is_satisfied_by => true))
           @hash_map.register_condition(:when, nil) { |value| value =~ /f/ }
         end
 
@@ -94,8 +94,8 @@ module Babelicious
 
       it "should register condition with MapCondition" do
         # given
-        MapCondition.stub!(:new).and_return(map_condition = mock("MapCondition", :register => nil))
-        hash_map = HashMap.new(mock("PathTranslator"))
+        MapCondition.stub!(:new).and_return(map_condition = double("MapCondition", :register => nil))
+        hash_map = HashMap.new(double("PathTranslator"))
 
         # expect
         map_condition.should_receive(:register) #.with(:when, an_instance_of(Proc))

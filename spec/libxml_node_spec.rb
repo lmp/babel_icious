@@ -7,15 +7,15 @@ module Babelicious
     describe "#new_node" do
 
       context "if block is passed" do
-        
+
         it "should yield new instance of Nokogiri::XML::Node" do
           # given
-          Nokogiri::XML::Node.stub!(:new).and_return(node = mock("Nokogiri::XML::Node"))
+          Nokogiri::XML::Node.stub!(:new).and_return(node = double("Nokogiri::XML::Node"))
 
           # expect
           new_node("foo") do |nd|
             nd.should == node
-          end 
+          end
         end
 
       end
@@ -30,12 +30,12 @@ EOL
         foo_node = new_node("foo") do |foo_node|
           foo_node << new_node("bar") do |bar_node|
             bar_node << "baz"
-          end 
+          end
         end
 
         foo_node.to_s.should == xml.chomp
-      end 
+      end
     end
 
-  end 
+  end
 end
