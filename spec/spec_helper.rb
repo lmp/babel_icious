@@ -1,6 +1,5 @@
 require "rubygems"
 require "rspec"
-require 'ruby-debug'
 
 
 RSpec.configure do |config|

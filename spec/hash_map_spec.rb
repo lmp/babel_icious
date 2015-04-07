@@ -7,7 +7,7 @@ module Babelicious
     describe ".initial_target" do
 
       it "should return an empty hash" do
-        HashMap.initial_target.should == {}
+        expect(HashMap.initial_target).to eq({})
       end
     end
 
@@ -15,12 +15,12 @@ module Babelicious
 
       it "should return source unfiltered" do
         source = {:foo => {:bar => "baz"}}
-        HashMap.filter_source(source).should == source
+        expect(HashMap.filter_source(source)).to eq(source)
       end
     end
 
     before(:each) do
-      @path_translator = mock("PathTranslator", :last_index => 0)
+      @path_translator = double("PathTranslator", :last_index => 0)
       @strategy = HashMap.new(@path_translator)
     end
 
@@ -34,9 +34,9 @@ module Babelicious
 
       before(:each) do
         @target_hash = {}
-        @path_translator = mock("PathTranslator", :last_index => 0)
+        @path_translator = double("PathTranslator", :last_index => 0)
         @hash_map = HashMap.new(@path_translator)
-        @path_translator.stub!(:inject_with_index).and_yield(@target_hash, "bar", 0)
+        allow(@path_translator).to receive(:inject_with_index).and_yield(@target_hash, "bar", 0)
       end
 
       def do_process
@@ -45,26 +45,26 @@ module Babelicious
 
       it "should set value in target map" do
         during_process {
-          @path_translator.should_receive(:inject_with_index).with({})
+          expect(@path_translator).to receive(:inject_with_index).with({})
         }
       end
 
       it "should apply value of source to key of target" do
         after_process {
-          @target_hash.should == {"bar" => "foo"}
+          expect(@target_hash).to eq({"bar" => "foo"})
         }
       end
 
       describe "map condition is set" do
 
         before(:each) do
-          MapCondition.stub!(:new).and_return(@map_condition = mock("MapCondition", :register => nil, :is_satisfied_by => true))
+          allow(MapCondition).to receive(:new).and_return(@map_condition = double("MapCondition", :register => nil, :is_satisfied_by => true))
           @hash_map.register_condition(:when, nil) { |value| value =~ /f/ }
         end
 
         it "should ask map condition to verify source value" do
           during_process {
-            @map_condition.should_receive(:is_satisfied_by).with("foo")
+            expect(@map_condition).to receive(:is_satisfied_by).with("foo")
           }
         end
 
@@ -72,7 +72,7 @@ module Babelicious
 
           it "should map hash" do
             during_process {
-              @path_translator.should_receive(:inject_with_index).with({})
+              expect(@path_translator).to receive(:inject_with_index).with({})
             }
           end
 
@@ -83,7 +83,7 @@ module Babelicious
 
         it "should ignore map condition" do
           during_process {
-            MapCondition.should_not_receive(:new)
+            expect(MapCondition).not_to receive(:new)
           }
         end
 
@@ -94,11 +94,11 @@ module Babelicious
 
       it "should register condition with MapCondition" do
         # given
-        MapCondition.stub!(:new).and_return(map_condition = mock("MapCondition", :register => nil))
-        hash_map = HashMap.new(mock("PathTranslator"))
+        allow(MapCondition).to receive(:new).and_return(map_condition = double("MapCondition", :register => nil))
+        hash_map = HashMap.new(double("PathTranslator"))
 
         # expect
-        map_condition.should_receive(:register) #.with(:when, an_instance_of(Proc))
+        expect(map_condition).to receive(:register) #.with(:when, an_instance_of(Proc))
 
         # when
         hash_map.register_condition(:when, nil) {|value| value =~ /f/ }
@@ -115,12 +115,12 @@ module Babelicious
       end
 
       it "should map value of element in path" do
-        @hash_map.value_from({:foo => {:bar => "baz"}}).should == "baz"
+        expect(@hash_map.value_from({:foo => {:bar => "baz"}})).to eq("baz")
       end
 
       context "hash value is false" do
         it "should have false and Not '' for false values" do
-          @hash_map.value_from({:foo => {:bar => false}}).should == false
+          expect(@hash_map.value_from({:foo => {:bar => false}})).to eq(false)
         end
       end
 

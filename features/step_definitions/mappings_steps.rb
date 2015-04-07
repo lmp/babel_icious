@@ -386,22 +386,22 @@ end
 Then /^the xml should be correctly mapped$/ do
   case @direction
   when {:from => :xml, :to => :hash}
-    @translation.should == {"doo"=>"d", "foo"=>{"bar"=>{"coo"=>"c"}}, "bar"=>{"boo"=>"b", "foo"=>"a"}}
+    expect(@translation).to eq({"doo"=>"d", "foo"=>{"bar"=>{"coo"=>"c"}}, "bar"=>{"boo"=>"b", "foo"=>"a"}})
   when {:from => :hash, :to => :xml}
-    @translation.to_s.gsub(/\s/, '').should == '<?xmlversion="1.0"encoding="UTF-8"?><bar><foo>a</foo><boo>b</boo><cuk><coo>c</coo><doo>d</doo></cuk></bar>'
+    expect(@translation.to_s.gsub(/\s/, '')).to eq('<?xmlversion="1.0"encoding="UTF-8"?><bar><foo>a</foo><boo>b</boo><cuk><coo>c</coo><doo>d</doo></cuk></bar>')
   when {:from => :hash, :to => :hash}
-    @translation.should == {"zoo" => "a", "yoo" => "b", "too" => "c", "soo" => {"roo" => "d"}}
+    expect(@translation).to eq({"zoo" => "a", "yoo" => "b", "too" => "c", "soo" => {"roo" => "d"}})
   when {:from => :object, :to => :xml}
-    @translation.to_s.gsub(/\s/, '').should == '<?xmlversion="1.0"encoding="UTF-8"?><foo><zoo>a</zoo><yoo>b</yoo><soo><roo>c</roo></soo></foo>'
+    expect(@translation.to_s.gsub(/\s/, '')).to eq('<?xmlversion="1.0"encoding="UTF-8"?><foo><zoo>a</zoo><yoo>b</yoo><soo><roo>c</roo></soo></foo>')
   end
 end
 
 Then /^the target should be correctly processed for condition '(.*)'$/ do |condition|
   case condition
   when /unless/
-    @translation.should == {"bar" => {"foo" => "a"}}
+    expect(@translation).to eq({"bar" => {"foo" => "a"}})
   when /when/
-    @translation.should == {"bar" => {"boo" => "hubbabubba"}}
+    expect(@translation).to eq({"bar" => {"boo" => "hubbabubba"}})
   end
 end
 
@@ -409,20 +409,19 @@ Then /^the xml target should be correctly processed for condition '(.*)'$/ do |c
   case condition
   when /unless/
     translation = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><bar><foo>a</foo></bar>"
-    @translation.to_s.gsub(/\s/, '').should == translation.to_s.gsub(/\s/, '')
+    expect(@translation.to_s.gsub(/\s/, '')).to eq(translation.to_s.gsub(/\s/, ''))
   end
 end
 
 Then /^the target should be properly concatenated$/ do
-  @translation.should == {"event"=>{"new_update_status_code"=>"FOO|BAR|BAZ"}}
-#  @translation.should == {"foo"=>{"bar"=>"c|d|e"}}
+  expect(@translation).to eq({"event"=>{"new_update_status_code"=>"FOO|BAR|BAZ"}})
 end
 
 Then /^the customized target should be correctly processed$/ do
   case @direction
   when {:from => :xml, :to => :hash}
     translation = {"event"=>{"new_update_status_code"=>[{"name"=>"Abandoned", "text"=>"bad phone"}, {"name"=>"Rejected", "text"=>"bad word"}]}}
-    @translation.should == translation
+    expect(@translation).to eq(translation)
   when {:from => :hash, :to => :xml}
  translation = <<-EOL
 <?xml version="1.0" encoding="UTF-8"?>
@@ -454,23 +453,20 @@ Then /^the customized target should be correctly processed$/ do
 </event>
 EOL
   end
-    @translation.to_s.gsub(/\s/, '').should == translation.to_s.gsub(/\s/, '')
-
-#  @translation.should == {"new_update_status_code"=>[{"name"=>"Abandoned", "text"=>"bad phone"}, {"name"=>"Rejected", "text"=>"bad word"}]}
-#  @translation.should == {"boo" => [{"bum" => "baz", "dum" => "coo"}]}
-end
+    expect(@translation.to_s.gsub(/\s/, '')).to eq(translation.to_s.gsub(/\s/, ''))
+  end
 
 Then /^the target should be correctly processed for custom \.to conditions$/ do
 #  xml = "<foo><bar>baz</bar></foo>"
-  @translation.should == { "value" => { "was" => { "baz" => "baz"}}}
+  expect(@translation).to eq({ "value" => { "was" => { "baz" => "baz"}}})
 end
 
 Then /^the target should have mappings included from different map$/ do
-  @translation.should == {"zoo" => "Dave", "yoo" => "Brady", "too" => "Liz", "soo" => { "roo" => "Brady"}}
+  expect(@translation).to eq({"zoo" => "Dave", "yoo" => "Brady", "too" => "Liz", "soo" => { "roo" => "Brady"}})
 end
 
 Then /^the target should have nested mappings included from different map$/ do
-  @translation.should == {"contact" => { "first_name" => "Dave", "last_name" => "Brady", "home_phone" => "1231231234"}}
+  expect(@translation).to eq({"contact" => { "first_name" => "Dave", "last_name" => "Brady", "home_phone" => "1231231234"}})
 end
 
 Then /^the target should be correctly processed prepopulate conditions$/ do
@@ -483,10 +479,10 @@ Then /^the target should be correctly processed prepopulate conditions$/ do
 </event>
 EOT
 
-  @translation.to_s.should == xml
+  expect(@translation.to_s).to eq(xml)
 end
 
 Then /^the target should be correctly reversed$/ do
   hash = {"foo" => {"bar" => "a", "baz" => "b", "cuk" => {"coo" => "c", "doo" => "d"}}}
-  @translation.should == hash
+  expect(@translation).to eq(hash)
 end
