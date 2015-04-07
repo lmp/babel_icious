@@ -13,8 +13,8 @@ end
 group :test do
   gem 'cucumber',           '1.2.2',  :require => false
   gem 'fixjour',            '0.5.1',  :require => false
-  gem 'rspec',              '~> 2.5.0'
-  gem 'rspec-core',         '~> 2.5.0'
-  gem 'rspec-expectations', '~> 2.5.0'
-  gem 'rspec-mocks',        '~> 2.5.0'
+  gem 'rspec',              '2.99.0'
+  # gem 'rspec-core',         '~> 2.5.0'
+  # gem 'rspec-expectations', '~> 2.5.0'
+  # gem 'rspec-mocks',        '~> 2.5.0'
 end
