@@ -21,7 +21,7 @@ module Babelicious
 
       it "should return a nokogiri XML document" do
         xml_doc = double(Nokogiri::XML::Document, :encoding= => nil)
-        Nokogiri::XML::Document.stub!(:new).and_return(xml_doc)
+        Nokogiri::XML::Document.stub(:new).and_return(xml_doc)
 
         XmlMap.initial_target.should == xml_doc
       end
@@ -51,7 +51,7 @@ module Babelicious
     describe "#map_from" do
 
       before(:each) do
-        Nokogiri::XML::Node.stub!(:new).and_return(@xml_node = double("Nokogiri::XML::Node", :empty? => false, :<< => nil))
+        Nokogiri::XML::Node.stub(:new).and_return(@xml_node = double("Nokogiri::XML::Node", :empty? => false, :<< => nil))
         @target_xml = double("Nokogiri::XML::Document", :root => nil, :xpath => [@xml_node], :root= => nil)
       end
 
@@ -95,7 +95,7 @@ module Babelicious
       describe "when node has only one child" do
 
         it "should return node" do
-          @node.stub!(:children).and_return([@child_node, @child_node])
+          @node.stub(:children).and_return([@child_node, @child_node])
           XmlMap.new(@path_translator).value_from(@source).should == @node
         end
       end

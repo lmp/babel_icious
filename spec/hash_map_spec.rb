@@ -36,7 +36,7 @@ module Babelicious
         @target_hash = {}
         @path_translator = double("PathTranslator", :last_index => 0)
         @hash_map = HashMap.new(@path_translator)
-        @path_translator.stub!(:inject_with_index).and_yield(@target_hash, "bar", 0)
+        @path_translator.stub(:inject_with_index).and_yield(@target_hash, "bar", 0)
       end
 
       def do_process
@@ -58,7 +58,7 @@ module Babelicious
       describe "map condition is set" do
 
         before(:each) do
-          MapCondition.stub!(:new).and_return(@map_condition = double("MapCondition", :register => nil, :is_satisfied_by => true))
+          MapCondition.stub(:new).and_return(@map_condition = double("MapCondition", :register => nil, :is_satisfied_by => true))
           @hash_map.register_condition(:when, nil) { |value| value =~ /f/ }
         end
 
@@ -94,7 +94,7 @@ module Babelicious
 
       it "should register condition with MapCondition" do
         # given
-        MapCondition.stub!(:new).and_return(map_condition = double("MapCondition", :register => nil))
+        MapCondition.stub(:new).and_return(map_condition = double("MapCondition", :register => nil))
         hash_map = HashMap.new(double("PathTranslator"))
 
         # expect

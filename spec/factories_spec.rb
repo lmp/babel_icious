@@ -9,7 +9,7 @@ module Babelicious
       @xml_map = double("XmlMap")
       @hash_map = double("HashMap")
       @path_translator = double("PathTranslator")
-      PathTranslator.stub!(:new).and_return(@path_translator)
+      PathTranslator.stub(:new).and_return(@path_translator)
     end
 
     describe MapFactory do

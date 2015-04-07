@@ -7,8 +7,8 @@ module Babelicious
     before(:each) do
       xml = '<foo>bar</foo>'
       @hash_map_klass = double("HashMapKlass", :initial_target => {})
-      MapFactory.stub!(:source).and_return(@source_element = double("XmlMap", :value_from => "bar"))
-      MapFactory.stub!(:target).and_return(@target_element = double("HashMap", :map_from => {}, :class => @hash_map_klass))
+      MapFactory.stub(:source).and_return(@source_element = double("XmlMap", :value_from => "bar"))
+      MapFactory.stub(:target).and_return(@target_element = double("HashMap", :map_from => {}, :class => @hash_map_klass))
       @map_definition = MapDefinition.new
       @map_definition.direction = {:from => :xml, :to => :hash}
       @opts = {:to => "bar/foo", :from => "foo/bar"}
@@ -52,7 +52,7 @@ module Babelicious
 
       it "should add source to mappings array" do
         # given
-        MapRule.stub!(:new).and_return(map_rule = MapRule.new(@source_element, @target_element))
+        MapRule.stub(:new).and_return(map_rule = MapRule.new(@source_element, @target_element))
         @map_definition.reset
 
         # when
@@ -135,7 +135,7 @@ module Babelicious
     describe "#register_rule" do
 
       def do_process
-        @source_element.stub!(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
+        @source_element.stub(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
         @map_definition.reset
         @map_definition.direction = {:from => :xml, :to => :hash}
         @map_definition.register_rule(@opts)
@@ -143,11 +143,11 @@ module Babelicious
 
       it "should register target or source mapping" do
         # given
-        @source_element.stub!(:class).and_return(double("XmlMapKlass", :filter_source => @xml))
+        @source_element.stub(:class).and_return(double("XmlMapKlass", :filter_source => @xml))
         @map_definition.reset
         @map_definition.direction = {:from => :xml, :to => :hash}
         map_rule = MapRule.new(@source_element, @target_element)
-        MapRule.stub!(:new).and_return(map_rule)
+        MapRule.stub(:new).and_return(map_rule)
 
         # when
         @map_definition.register_rule(@opts)
@@ -169,7 +169,7 @@ module Babelicious
           end
 
           it "should delegate creation of the initial target to the target element" do
-            pending
+            skip
             during_process {
               @hash_map_klass.should_receive(:initial_target).once.and_return({})
             }
@@ -276,8 +276,8 @@ module Babelicious
 
       before(:each) do
         @xml = '<foo>bar</foo>'
-        @source_element.stub!(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
-        @target_element.stub!(:opts).and_return({})
+        @source_element.stub(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
+        @target_element.stub(:opts).and_return({})
       end
 
       def do_process
@@ -300,9 +300,9 @@ module Babelicious
 
         before(:each) do
           @path_translator = double("PathTranslator", :set_path => nil)
-          @target_element.stub!(:path_translator).and_return(@path_translator)
+          @target_element.stub(:path_translator).and_return(@path_translator)
           @proc = double("Proc", :call => "baz")
-          @target_element.stub!(:opts).and_return({:to_proc => @proc})
+          @target_element.stub(:opts).and_return({:to_proc => @proc})
         end
 
         it "should call proc" do

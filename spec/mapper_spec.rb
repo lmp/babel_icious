@@ -5,7 +5,7 @@ module Babelicious
   describe "Mapper" do
 
     before(:each) do
-      MapDefinition.stub!(:new).and_return(@map_definition = double("MapDefinition", :register_rule => nil, :direction= => nil))
+      MapDefinition.stub(:new).and_return(@map_definition = double("MapDefinition", :register_rule => nil, :direction= => nil))
     end
 
     describe ".config" do
@@ -186,7 +186,7 @@ module Babelicious
         Mapper.should_receive(:reset_document)
 
         # given
-        @map_definition.stub!(:translate).and_return({})
+        @map_definition.stub(:translate).and_return({})
         Mapper.translate(:foo, @xml)
       end
 
