@@ -21,9 +21,9 @@ module Babelicious
 
       it "should return a nokogiri XML document" do
         xml_doc = double(Nokogiri::XML::Document, :encoding= => nil)
-        Nokogiri::XML::Document.stub(:new).and_return(xml_doc)
+        allow(Nokogiri::XML::Document).to receive(:new).and_return(xml_doc)
 
-        XmlMap.initial_target.should == xml_doc
+        expect(XmlMap.initial_target).to eq(xml_doc)
       end
     end
 
@@ -33,7 +33,7 @@ module Babelicious
         source = '<foo><bar>baz</bar></foo>'
 
         # expect
-        Nokogiri::XML::Document.should_receive(:parse).with(source)
+        expect(Nokogiri::XML::Document).to receive(:parse).with(source)
 
         # given
         XmlMap.filter_source(source)
@@ -43,7 +43,7 @@ module Babelicious
     describe "#value_from" do
 
       it "should map value of element in path" do
-        @xml_map.value_from(@source).should == "baz"
+        expect(@xml_map.value_from(@source)).to eq("baz")
       end
 
     end
@@ -51,7 +51,7 @@ module Babelicious
     describe "#map_from" do
 
       before(:each) do
-        Nokogiri::XML::Node.stub(:new).and_return(@xml_node = double("Nokogiri::XML::Node", :empty? => false, :<< => nil))
+        allow(Nokogiri::XML::Node).to receive(:new).and_return(@xml_node = double("Nokogiri::XML::Node", :empty? => false, :<< => nil))
         @target_xml = double("Nokogiri::XML::Document", :root => nil, :xpath => [@xml_node], :root= => nil)
       end
 
@@ -61,7 +61,7 @@ module Babelicious
 
       it "should set root element in xml" do
         during_process {
-          @target_xml.should_receive(:root=).with(@xml_node)
+          expect(@target_xml).to receive(:root=).with(@xml_node)
         }
       end
 
@@ -69,7 +69,7 @@ module Babelicious
 
         it "should set value in target node" do
           during_process {
-            @xml_node.should_receive(:<<).with("foo")
+            expect(@xml_node).to receive(:<<).with("foo")
           }
         end
       end
@@ -87,7 +87,7 @@ module Babelicious
       describe "when node has only one child" do
 
         it "should return node content" do
-          XmlMap.new(@path_translator).value_from(@source).should == "foo"
+          expect(XmlMap.new(@path_translator).value_from(@source)).to eq("foo")
         end
 
       end
@@ -95,8 +95,8 @@ module Babelicious
       describe "when node has only one child" do
 
         it "should return node" do
-          @node.stub(:children).and_return([@child_node, @child_node])
-          XmlMap.new(@path_translator).value_from(@source).should == @node
+          allow(@node).to receive(:children).and_return([@child_node, @child_node])
+          expect(XmlMap.new(@path_translator).value_from(@source)).to eq(@node)
         end
       end
 
@@ -118,13 +118,13 @@ module Babelicious
 
         it "should populate parent nodes of target child" do
           after_process {
-            @xml_target.to_s.should =~ /<foo>/
+            expect(@xml_target.to_s).to match(/<foo>/)
           }
         end
 
         it "should populate target child node" do
           after_process {
-            @xml_target.to_s.should =~ /<bar>baz/
+            expect(@xml_target.to_s).to match(/<bar>baz/)
           }
         end
       end

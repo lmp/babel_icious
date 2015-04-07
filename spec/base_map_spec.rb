@@ -14,8 +14,8 @@ shared_examples_for "an implementation of a mapping strategy" do
     
     it "deep dups all of its attributes" do
       dupd = @strategy.dup
-      dupd.opts.object_id.should_not == @strategy.opts.object_id
-      dupd.path_translator.object_id.should_not == @strategy.path_translator.object_id
+      expect(dupd.opts.object_id).not_to eq(@strategy.opts.object_id)
+      expect(dupd.path_translator.object_id).not_to eq(@strategy.path_translator.object_id)
     end
     
   end

@@ -9,7 +9,7 @@ module Babelicious
       @xml_map = double("XmlMap")
       @hash_map = double("HashMap")
       @path_translator = double("PathTranslator")
-      PathTranslator.stub(:new).and_return(@path_translator)
+      allow(PathTranslator).to receive(:new).and_return(@path_translator)
     end
 
     describe MapFactory do
@@ -20,7 +20,7 @@ module Babelicious
 
           it "should instantiate XmlMap" do
             # expect
-            XmlMap.should_receive(:new).with(@path_translator, {:from => "foo/bar"}).and_return(@xml_map)
+            expect(XmlMap).to receive(:new).with(@path_translator, {:from => "foo/bar"}).and_return(@xml_map)
 
             # given
             MapFactory.source(@direction, {:from => "foo/bar"})
@@ -31,7 +31,7 @@ module Babelicious
 
           it "should instantiate HashMap" do
             # expect
-            HashMap.should_receive(:new).with(@path_translator, {:from => "foo/bar"}).and_return(@hash_map)
+            expect(HashMap).to receive(:new).with(@path_translator, {:from => "foo/bar"}).and_return(@hash_map)
 
             # given
             MapFactory.source({:from => :hash, :to => :xml}, {:from => "foo/bar"})
@@ -49,7 +49,7 @@ module Babelicious
             xml_map = double("XmlMap")
 
             # expect
-            HashMap.should_receive(:new).with(@path_translator, {:to => "bar/foo"}).and_return(@hash_map)
+            expect(HashMap).to receive(:new).with(@path_translator, {:to => "bar/foo"}).and_return(@hash_map)
 
             # given
             MapFactory.target(@direction, {:to => "bar/foo"})
@@ -64,7 +64,7 @@ module Babelicious
             hash_map = double("HashMap")
 
             # expect
-            XmlMap.should_receive(:new).with(@path_translator, {:to => "bar/foo"}).and_return(@xml_map)
+            expect(XmlMap).to receive(:new).with(@path_translator, {:to => "bar/foo"}).and_return(@xml_map)
 
             # given
             MapFactory.target({:from => :hash, :to => :xml}, {:to => "bar/foo"})
@@ -86,7 +86,7 @@ module Babelicious
     describe ".filter_source" do
 
       it "should return source argument" do
-        SourceProxy.filter_source("foo").should == "foo"
+        expect(SourceProxy.filter_source("foo")).to eq("foo")
       end
 
     end
@@ -94,7 +94,7 @@ module Babelicious
     describe "#path_translator" do
 
       it "should return path_translator object" do
-        @source_proxy.path_translator.should be_an_instance_of(PathTranslator)
+        expect(@source_proxy.path_translator).to be_an_instance_of(PathTranslator)
       end
 
     end
@@ -106,7 +106,7 @@ module Babelicious
         @source_proxy.with("foo")
 
         # expect
-        @source_proxy.value_from.should == "foo"
+        expect(@source_proxy.value_from).to eq("foo")
       end
 
     end
@@ -118,7 +118,7 @@ module Babelicious
         @source_proxy.with("foo")
 
         # expect
-        @source_proxy.value_from.should == "foo"
+        expect(@source_proxy.value_from).to eq("foo")
       end
 
     end

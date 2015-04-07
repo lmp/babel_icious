@@ -16,7 +16,7 @@ module Babelicious
 
           it "should return true" do
             @map_condition.register(:when, nil) { |value| value =~ /fo/ }
-            @map_condition.is_satisfied_by("foo").should be_truthy
+            expect(@map_condition.is_satisfied_by("foo")).to be_truthy
           end
         end
 
@@ -24,7 +24,7 @@ module Babelicious
 
           it "should return nil" do
             @map_condition.register(:when, nil) { |value| value =~ /baz/ }
-            @map_condition.is_satisfied_by("foo").should be_nil
+            expect(@map_condition.is_satisfied_by("foo")).to be_nil
           end
         end
 
@@ -36,7 +36,7 @@ module Babelicious
 
           it "should return true" do
             @map_condition.register(:unless, :nil)
-            @map_condition.is_satisfied_by("foo").should be true
+            expect(@map_condition.is_satisfied_by("foo")).to be true
           end
         end
 
@@ -44,7 +44,7 @@ module Babelicious
 
           it "should return false" do
             @map_condition.register(:unless, :empty)
-            @map_condition.is_satisfied_by('').should be false
+            expect(@map_condition.is_satisfied_by('')).to be false
           end
         end
 

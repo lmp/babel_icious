@@ -17,7 +17,7 @@ module Babelicious
           @map_rule.source = @source
 
           # expect
-          @map_rule.source.should == @source
+          expect(@map_rule.source).to eq(@source)
         end
 
       end
@@ -29,7 +29,7 @@ module Babelicious
           @map_rule.target = @target
 
           # expect
-          @map_rule.target.should == @target
+          expect(@map_rule.target).to eq(@target)
         end
 
       end
@@ -48,7 +48,7 @@ module Babelicious
 
         it "should return source mapping" do
           # expect
-          @map_rule.source.should == @source
+          expect(@map_rule.source).to eq(@source)
         end
 
       end
@@ -57,7 +57,7 @@ module Babelicious
 
         it "should return target mapping" do
           # expect
-          @map_rule.target.should == @target
+          expect(@map_rule.target).to eq(@target)
         end
 
       end
@@ -73,7 +73,7 @@ module Babelicious
         map_rule = MapRule.new(source, target)
 
         # expect
-        HashMap.should_receive(:filter_source).with({:foo => "bar"})
+        expect(HashMap).to receive(:filter_source).with({:foo => "bar"})
 
         # when
         map_rule.filtered_source({:foo => "bar"})
@@ -86,7 +86,7 @@ module Babelicious
         map_rule = MapRule.new(source, target)
 
         # expect
-        map_rule.filtered_source({:foo => "bar"}).should == {:foo => "bar"}
+        expect(map_rule.filtered_source({:foo => "bar"})).to eq({:foo => "bar"})
       end
 
     end
@@ -102,14 +102,14 @@ module Babelicious
 
       it "should delegate to target strategy" do
         # expect
-        HashMap.should_receive(:initial_target)
+        expect(HashMap).to receive(:initial_target)
 
         # when
         @map_rule.initial_target
       end
 
       it "should return initial target data structure for target strategy" do
-        @map_rule.initial_target.should == {}
+        expect(@map_rule.initial_target).to eq({})
       end
 
     end
@@ -128,7 +128,7 @@ module Babelicious
       context "#source_path" do
 
         it "should return full path for mapping" do
-          @map_rule.source_path.should == @source_path_translator.full_path
+          expect(@map_rule.source_path).to eq(@source_path_translator.full_path)
         end
 
       end
@@ -136,7 +136,7 @@ module Babelicious
       context "#target_path" do
 
         it "should return full path for mapping" do
-          @map_rule.target_path.should == @target_path_translator.full_path
+          expect(@map_rule.target_path).to eq(@target_path_translator.full_path)
         end
 
       end
@@ -164,7 +164,7 @@ module Babelicious
 
         it "should delegate to path_translator" do
           # expect
-          @target_with_proc.should_receive(:path_translator).and_return(@path_translator)
+          expect(@target_with_proc).to receive(:path_translator).and_return(@path_translator)
 
           # when
           @map_rule.translate(@target_data, @source_value)
@@ -172,7 +172,7 @@ module Babelicious
 
         it "should delegate mapping to target element" do
           # expect
-          @target_with_proc.should_receive(:map_from).with(@target_data, @source_value)
+          expect(@target_with_proc).to receive(:map_from).with(@target_data, @source_value)
 
           # when
           @map_rule.translate(@target_data, @source_value)
@@ -182,7 +182,7 @@ module Babelicious
 
       it "should delegate mapping to target element" do
         # expect
-        @target.should_receive(:map_from).with(@target_data, @source_value)
+        expect(@target).to receive(:map_from).with(@target_data, @source_value)
 
         # when
         @map_rule.translate(@target_data, @source_value)

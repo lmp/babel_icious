@@ -11,7 +11,7 @@ module Babelicious
     describe "#[]" do
 
       it "should return element from parsed path array at specified index" do
-        @translator[1].should == "foo"
+        expect(@translator[1]).to eq("foo")
       end
     end
 
@@ -19,8 +19,8 @@ module Babelicious
 
       it "deep dups all of the attributes" do
         dupd = @translator.dup
-        dupd.full_path.object_id.should_not == @translator.full_path.object_id
-        dupd.parsed_path.object_id.should_not == @translator.parsed_path.object_id
+        expect(dupd.full_path.object_id).not_to eq(@translator.full_path.object_id)
+        expect(dupd.parsed_path.object_id).not_to eq(@translator.parsed_path.object_id)
       end
 
     end
@@ -29,7 +29,7 @@ module Babelicious
 
       it "should yield path elements array" do
         @translator.each do |element|
-          ["bar", "foo"].include?(element).should be true
+          expect(["bar", "foo"].include?(element)).to be true
         end
       end
 
@@ -38,25 +38,25 @@ module Babelicious
     describe "#last" do
 
       it "should return last element in path" do
-        @translator.last.should == "foo"
+        expect(@translator.last).to eq("foo")
       end
     end
 
     describe "#last_index" do
 
       it "should return index of last element in parsed path array" do
-        @translator.last_index.should == 1
+        expect(@translator.last_index).to eq(1)
       end
     end
 
     describe "#prepare_path" do
 
       it "should strip opening slashes" do
-        @translator.prepare_path("/foo/bar").should == "foo/bar"
+        expect(@translator.prepare_path("/foo/bar")).to eq("foo/bar")
       end
 
       it "should strip trailing slashes" do
-        @translator.prepare_path("foo/bar/").should == "foo/bar"
+        expect(@translator.prepare_path("foo/bar/")).to eq("foo/bar")
       end
 
     end
@@ -64,7 +64,7 @@ module Babelicious
     describe "#size" do
 
       it "should return size of path elements" do
-        @translator.size.should == 2
+        expect(@translator.size).to eq(2)
       end
 
     end
@@ -77,13 +77,13 @@ module Babelicious
 
       it "should set full_path" do
         after_process {
-          @translator.full_path.should == "foo/bar"
+          expect(@translator.full_path).to eq("foo/bar")
         }
       end
 
       it "should set parsed_path" do
         after_process {
-          @translator.parsed_path.should == ["foo", "bar"]
+          expect(@translator.parsed_path).to eq(["foo", "bar"])
         }
       end
 
@@ -92,7 +92,7 @@ module Babelicious
     describe "#translate" do
 
       it "should split path elements into array" do
-        @translator.parsed_path.should == ["bar", "foo"]
+        expect(@translator.parsed_path).to eq(["bar", "foo"])
       end
 
       describe "leading '/'" do
@@ -100,7 +100,7 @@ module Babelicious
         it "should remove leading '/' from path" do
           translator = PathTranslator.new("/bar/foo")
 
-          translator.parsed_path.should == ["bar", "foo"]
+          expect(translator.parsed_path).to eq(["bar", "foo"])
         end
 
       end
@@ -113,7 +113,7 @@ module Babelicious
         @translator.unshift("baz")
 
         # expect
-        @translator.full_path.should == "baz/bar/foo"
+        expect(@translator.full_path).to eq("baz/bar/foo")
       end
 
       it "should push element to beginning of parsed path array" do
@@ -121,7 +121,7 @@ module Babelicious
         @translator.unshift("baz")
 
         # expect
-        @translator.parsed_path.should == ["baz", "bar", "foo"]
+        expect(@translator.parsed_path).to eq(["baz", "bar", "foo"])
       end
 
       context "if multiple namespaces provided" do
@@ -131,7 +131,7 @@ module Babelicious
           @translator.unshift("baz/boo")
 
           # expect
-          @translator.parsed_path.should == ["baz", "boo", "bar", "foo"]
+          expect(@translator.parsed_path).to eq(["baz", "boo", "bar", "foo"])
         end
 
       end

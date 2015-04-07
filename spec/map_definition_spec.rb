@@ -7,8 +7,8 @@ module Babelicious
     before(:each) do
       xml = '<foo>bar</foo>'
       @hash_map_klass = double("HashMapKlass", :initial_target => {})
-      MapFactory.stub(:source).and_return(@source_element = double("XmlMap", :value_from => "bar"))
-      MapFactory.stub(:target).and_return(@target_element = double("HashMap", :map_from => {}, :class => @hash_map_klass))
+      allow(MapFactory).to receive(:source).and_return(@source_element = double("XmlMap", :value_from => "bar"))
+      allow(MapFactory).to receive(:target).and_return(@target_element = double("HashMap", :map_from => {}, :class => @hash_map_klass))
       @map_definition = MapDefinition.new
       @map_definition.direction = {:from => :xml, :to => :hash}
       @opts = {:to => "bar/foo", :from => "foo/bar"}
@@ -20,7 +20,7 @@ module Babelicious
 
       it "should delegate to target map" do
         # expect
-        @target_element.should_receive(:register_condition).with(:unless, :nil)
+        expect(@target_element).to receive(:register_condition).with(:unless, :nil)
 
         # given
         @map_definition.register_condition(:unless, :nil)
@@ -32,7 +32,7 @@ module Babelicious
 
       it "should delegate to target map element" do
         # expect
-        @target_element.should_receive(:register_customized)
+        expect(@target_element).to receive(:register_customized)
 
         # given
         @map_definition.register_customized
@@ -44,7 +44,7 @@ module Babelicious
 
       it "should create new source object" do
         # expect
-        MapFactory.should_receive(:source).with({:from => :xml, :to => :hash}, {:from => "foo/bar"})
+        expect(MapFactory).to receive(:source).with({:from => :xml, :to => :hash}, {:from => "foo/bar"})
 
         # given
         @map_definition.register_from("foo/bar")
@@ -52,20 +52,20 @@ module Babelicious
 
       it "should add source to mappings array" do
         # given
-        MapRule.stub(:new).and_return(map_rule = MapRule.new(@source_element, @target_element))
+        allow(MapRule).to receive(:new).and_return(map_rule = MapRule.new(@source_element, @target_element))
         @map_definition.reset
 
         # when
         @map_definition.register_from("foo/bar")
 
         # expect
-        @map_definition.rules.should == [map_rule]
+        expect(@map_definition.rules).to eq([map_rule])
       end
 
       context "when argument is nil" do
 
         it "should raise an error" do
-          running { @map_definition.register_from(nil) }.should raise_error(MapDefinitionError)
+          expect(running { @map_definition.register_from(nil) }).to raise_error(MapDefinitionError)
         end
       end
 
@@ -87,7 +87,7 @@ module Babelicious
       context "missing mapping key" do
 
         it "should raise an error" do
-          running { @map_definition.register_include }.should raise_error(MapDefinitionError)
+          expect(running { @map_definition.register_include }).to raise_error(MapDefinitionError)
         end
 
       end
@@ -95,14 +95,14 @@ module Babelicious
       context "missing included mapping" do
 
         it "should raise an error" do
-          running { @map_definition.register_include(:foo) }.should raise_error(MapDefinitionError)
+          expect(running { @map_definition.register_include(:foo) }).to raise_error(MapDefinitionError)
         end
 
       end
 
       it "should retrieve rules from included map definition" do
         # expect
-        @other_map_definition.should_receive(:rules)
+        expect(@other_map_definition).to receive(:rules)
 
         # when
         @map_definition.register_include(:another_mapping)
@@ -113,16 +113,16 @@ module Babelicious
         @map_definition.register_include(:another_mapping)
 
         # expect
-        @map_definition.rules.last.source.should == @dupd_source
-        @map_definition.rules.last.target.should == @dupd_target
+        expect(@map_definition.rules.last.source).to eq(@dupd_source)
+        expect(@map_definition.rules.last.target).to eq(@dupd_target)
       end
 
       context "when included mapping is nested" do
 
         it "should add its own " do
           # expect
-          @dupd_source.path_translator.should_receive(:unshift).with("barf")
-          @dupd_target.path_translator.should_receive(:unshift).with("barf")
+          expect(@dupd_source.path_translator).to receive(:unshift).with("barf")
+          expect(@dupd_target.path_translator).to receive(:unshift).with("barf")
 
           # when
           @map_definition.register_include(:another_mapping, {:inside_of => "barf"})
@@ -135,7 +135,7 @@ module Babelicious
     describe "#register_rule" do
 
       def do_process
-        @source_element.stub(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
+        allow(@source_element).to receive(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
         @map_definition.reset
         @map_definition.direction = {:from => :xml, :to => :hash}
         @map_definition.register_rule(@opts)
@@ -143,17 +143,17 @@ module Babelicious
 
       it "should register target or source mapping" do
         # given
-        @source_element.stub(:class).and_return(double("XmlMapKlass", :filter_source => @xml))
+        allow(@source_element).to receive(:class).and_return(double("XmlMapKlass", :filter_source => @xml))
         @map_definition.reset
         @map_definition.direction = {:from => :xml, :to => :hash}
         map_rule = MapRule.new(@source_element, @target_element)
-        MapRule.stub(:new).and_return(map_rule)
+        allow(MapRule).to receive(:new).and_return(map_rule)
 
         # when
         @map_definition.register_rule(@opts)
 
         # expect
-        @map_definition.rules.should == [map_rule]
+        expect(@map_definition.rules).to eq([map_rule])
       end
 
       describe "setting target" do
@@ -171,7 +171,7 @@ module Babelicious
           it "should delegate creation of the initial target to the target element" do
             skip
             during_process {
-              @hash_map_klass.should_receive(:initial_target).once.and_return({})
+              expect(@hash_map_klass).to receive(:initial_target).once.and_return({})
             }
           end
 
@@ -180,20 +180,20 @@ module Babelicious
 
       it "should instantiate 'from' mapping element" do
         during_process {
-          MapFactory.should_receive(:source).with(@map_definition.direction, @opts).and_return(@source_element)
+          expect(MapFactory).to receive(:source).with(@map_definition.direction, @opts).and_return(@source_element)
         }
       end
 
       it "should instantiate 'to' mapping element" do
         during_process {
-          MapFactory.should_receive(:target).with(@map_definition.direction, @opts).and_return(@target_element)
+          expect(MapFactory).to receive(:target).with(@map_definition.direction, @opts).and_return(@target_element)
         }
       end
 
       context "when :to or :from are not set" do
 
         it "should raise an error" do
-          running { @map_definition.register_rule({})}.should raise_error(MapDefinitionError)
+          expect(running { @map_definition.register_rule({})}).to raise_error(MapDefinitionError)
         end
 
       end
@@ -207,7 +207,7 @@ module Babelicious
 
       it "should create new target object" do
         # expect
-        MapFactory.should_receive(:target).with({:from => :xml, :to => :hash}, {:to => @target_data})
+        expect(MapFactory).to receive(:target).with({:from => :xml, :to => :hash}, {:to => @target_data})
 
         # when
         @map_definition.register_prepopulate(@target_data)
@@ -218,12 +218,12 @@ module Babelicious
         @map_definition.register_prepopulate(@target_data)
 
         # expect
-        @map_definition.rules.last.source.should be_a_kind_of(SourceProxy)
+        expect(@map_definition.rules.last.source).to be_a_kind_of(SourceProxy)
       end
 
       it "should return a source proxy object" do
         source = @map_definition.register_prepopulate(@target_data)
-        source.should be_a_kind_of(SourceProxy)
+        expect(source).to be_a_kind_of(SourceProxy)
       end
 
     end
@@ -232,7 +232,7 @@ module Babelicious
 
       it "should create new target object" do
         # expect
-        MapFactory.should_receive(:target).with({:from => :xml, :to => :hash}, {:to => '', :to_proc => nil})
+        expect(MapFactory).to receive(:target).with({:from => :xml, :to => :hash}, {:to => '', :to_proc => nil})
 
         # given
         @map_definition.register_to
@@ -246,7 +246,7 @@ module Babelicious
         @map_definition.register_to
 
         # expect
-        @map_definition.rules.should == [map_rule]
+        expect(@map_definition.rules).to eq([map_rule])
       end
 
       context "if .from has not been set before calling .to" do
@@ -255,7 +255,7 @@ module Babelicious
           # given
           @map_definition.reset
 
-          running { @map_definition.register_to }.should raise_error(MapDefinitionError)
+          expect(running { @map_definition.register_to }).to raise_error(MapDefinitionError)
         end
       end
     end
@@ -267,8 +267,8 @@ module Babelicious
         @map_definition.reset
 
         # expect
-        @map_definition.rules.should be_empty
-        @map_definition.direction.should be_nil
+        expect(@map_definition.rules).to be_empty
+        expect(@map_definition.direction).to be_nil
       end
     end
 
@@ -276,8 +276,8 @@ module Babelicious
 
       before(:each) do
         @xml = '<foo>bar</foo>'
-        @source_element.stub(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
-        @target_element.stub(:opts).and_return({})
+        allow(@source_element).to receive(:class).and_return(@xml_map_klass = double("XmlMapKlass", :filter_source => @xml))
+        allow(@target_element).to receive(:opts).and_return({})
       end
 
       def do_process
@@ -286,13 +286,13 @@ module Babelicious
 
       it "should map target to elements for mapping" do
         during_process {
-          @target_element.should_receive(:map_from).and_return({})
+          expect(@target_element).to receive(:map_from).and_return({})
         }
       end
 
       it "should delegate the source to the source element for filtering" do
         during_process {
-          @xml_map_klass.should_receive(:filter_source).with(@xml).once
+          expect(@xml_map_klass).to receive(:filter_source).with(@xml).once
         }
       end
 
@@ -300,26 +300,26 @@ module Babelicious
 
         before(:each) do
           @path_translator = double("PathTranslator", :set_path => nil)
-          @target_element.stub(:path_translator).and_return(@path_translator)
+          allow(@target_element).to receive(:path_translator).and_return(@path_translator)
           @proc = double("Proc", :call => "baz")
-          @target_element.stub(:opts).and_return({:to_proc => @proc})
+          allow(@target_element).to receive(:opts).and_return({:to_proc => @proc})
         end
 
         it "should call proc" do
           during_process {
-            @proc.should_receive(:call).and_return("baz")
+            expect(@proc).to receive(:call).and_return("baz")
           }
         end
 
         it "should set path on path translator" do
           during_process {
-            @path_translator.should_receive(:set_path).with("baz")
+            expect(@path_translator).to receive(:set_path).with("baz")
           }
         end
 
         it "should map source to target element" do
           during_process {
-            @target_element.should_receive(:map_from).with({}, "bar").and_return({})
+            expect(@target_element).to receive(:map_from).with({}, "bar").and_return({})
           }
         end
 

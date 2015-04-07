@@ -10,11 +10,11 @@ module Babelicious
 
         it "should yield new instance of Nokogiri::XML::Node" do
           # given
-          Nokogiri::XML::Node.stub(:new).and_return(node = double("Nokogiri::XML::Node"))
+          allow(Nokogiri::XML::Node).to receive(:new).and_return(node = double("Nokogiri::XML::Node"))
 
           # expect
           new_node("foo") do |nd|
-            nd.should == node
+            expect(nd).to eq(node)
           end
         end
 
@@ -33,7 +33,7 @@ EOL
           end
         end
 
-        foo_node.to_s.should == xml.chomp
+        expect(foo_node.to_s).to eq(xml.chomp)
       end
     end
 
