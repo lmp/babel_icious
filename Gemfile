@@ -6,8 +6,9 @@ gem 'andand',             '1.3.1'
 gem 'nokogiri',           '1.4.4'
 
 group :development do
-  gem 'ruby-debug', :platform => :ruby_18
   gem 'debugger',   :platform => :ruby_19
+  gem 'byebug',     :platform => :ruby_20
+  gem 'byebug',     :platform => :ruby_21
 end
 
 group :test do
